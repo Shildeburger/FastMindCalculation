@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тренировка вычислений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .problem {
+            font-size: 32px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        input {
+            font-size: 24px;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .feedback {
+            font-size: 20px;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тренировка вычислений</h1>
+    <div class="problem" id="problem">Нажмите "Старт"</div>
+    <input type="number" id="answer" placeholder="Ответ">
+    <div>
+        <button id="check">Проверить</button>
+        <button id="next">Следующий</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        //Генерация примеров
+function getRandomInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function oneone() {
+    const num1 = getRandomInRange(1, 9);
+    const num2 = getRandomInRange(1, 9);
+    const typeofcalc = getRandomInRange(0, 1);                                
+        if (typeofcalc === 0) {
+            return {
+                problem: `${num1} + ${num2}`,
+                answer: num1 + num2
+            };                
+        } else {
+            if (num1 - num2 >= 0) {
+                return {
+                    problem: `${num1} - ${num2}`,
+                    answer: num1 - num2
+                };                 
+            } else {
+                return {
+                problem: `${num2} - ${num1}`,
+                answer: num2 - num1
+                };    
+            }
+        }
+}
+function twotwo() {
+    const num1 = getRandomInRange(10, 99);
+    const num2 = getRandomInRange(10, 99);
+    const typeofcalc = getRandomInRange(0, 1);                                
+        if (typeofcalc === 0) {
+            return {
+                problem: `${num1} + ${num2}`,
+                answer: num1 + num2
+            };                
+        } else {
+            if (num1 - num2 >= 0) {
+                return {
+                    problem: `${num1} - ${num2}`,
+                    answer: num1 - num2
+                };                 
+            } else {
+                return {
+                problem: `${num2} - ${num1}`,
+                answer: num2 - num1
+                };    
+            }
+        }
+}
+function twoone() {
+    const onenum = getRandomInRange(1, 9);
+    const twonum = getRandomInRange(10, 99);
+    const typeofcalc = getRandomInRange(0, 1);                                
+    if (typeofcalc === 0) {
+        return {
+            problem: `${twonum} + ${onenum}`,
+            answer: twonum + onenum
+        };
+    } else {
+        return {
+            problem: `${twonum} - ${onenum}`,
+            answer: twonum - onenum
+        };
+    }
+}
+function twoononemult9() {
+    const onenum = getRandomInRange(1, 9);
+    const twonum = getRandomInRange(10, 99);
+    const typeofcalc = getRandomInRange(0, 1);                                
+    if (typeofcalc === 0) {
+        return {
+            problem: `${onenum} * 9`,
+            answer: onenum * 9
+        };
+    } else {
+        return {
+            problem: `${twonum} * 9`,
+            answer: twonum * 9
+        };
+    }
+}
+function twoononemult11() {
+    const onenum = getRandomInRange(1, 9);
+    const twonum = getRandomInRange(10, 99);
+    const typeofcalc = getRandomInRange(0, 1);                                
+    if (typeofcalc === 0) {
+        return {
+            problem: `${onenum} * 11`,
+            answer: onenum * 11
+        };
+    } else {
+        return {
+            problem: `${twonum} * 11`,
+            answer: twonum * 11
+        };
+    }
+}
+function firstlevelcalc() {
+    let varofcalc = getRandomInRange(1, 5);
+    switch (varofcalc) {
+        case 1:
+            return oneone();
+            break;
+        case 2:
+            return twotwo();
+            break;
+        case 3:
+            return twoone();
+            break;
+        case 4:
+            return twoononemult9();
+            break;
+        case 5:
+            return twoononemult11();
+            break;
+    }
+}
+//Интерфейс
+let currentProblem = firstlevelcalc();
+        let score = 0;
+
+        function updateProblem() {
+            currentProblem = firstlevelcalc();
+            document.getElementById('problem').textContent = currentProblem.problem;
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('answer').focus();
+        }
+
+        document.getElementById('check').addEventListener('click', function() {
+            const userAnswer = parseFloat(document.getElementById('answer').value);
+            const feedbackEl = document.getElementById('feedback');
+            
+            if (isNaN(userAnswer)) {
+                feedbackEl.textContent = 'Введите число!';
+                return;
+            }
+            
+            if (Math.abs(userAnswer - currentProblem.answer) < 0.001) {
+                feedbackEl.textContent = '✅ Правильно!';
+                feedbackEl.style.color = 'green';
+                score++;
+            } else {
+                feedbackEl.textContent = `❌ Неправильно! Правильный ответ: ${currentProblem.answer}`;
+                feedbackEl.style.color = 'red';
+            }
+        });
+
+        document.getElementById('next').addEventListener('click', updateProblem);
+
+        // Начало работы
+        updateProblem();
+    </script>
+</body>
+</html>
