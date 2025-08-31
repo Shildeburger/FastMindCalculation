@@ -5,201 +5,476 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             text-align: center;
         }
-        .problem {
-            font-size: 32px;
+        
+        /* Стили для выбора уровня */
+        .level-selector {
             margin: 20px 0;
             padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
+        .level-btn {
+            font-size: 16px;
+            padding: 12px 25px;
+            margin: 8px;
+            cursor: pointer;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .level-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .level-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .level-btn.easy { border-left: 4px solid #28a745; }
+        .level-btn.medium { border-left: 4px solid #ffc107; }
+        .level-btn.hard { border-left: 4px solid #dc3545; }
+        
+        .level-btn.easy.active { background: #28a745; border-color: #28a745; }
+        .level-btn.medium.active { background: #ffc107; border-color: #ffc107; }
+        .level-btn.hard.active { background: #dc3545; border-color: #dc3545; }
+        
+        /* Игровая зона */
+        .game-container {
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid #e9ecef;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .problem {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            min-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .input-group {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
         input {
             font-size: 24px;
-            padding: 10px;
-            width: 100px;
+            padding: 15px;
+            width: 120px;
             text-align: center;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            transition: border-color 0.3s;
         }
-        button {
+        
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .game-btn {
             font-size: 18px;
-            padding: 10px 20px;
+            padding: 12px 25px;
             margin: 10px;
             cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            transition: all 0.3s;
         }
+        
+        .game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+        
+        .game-btn.check { background: #28a745; }
+        .game-btn.next { background: #17a2b8; }
+        .game-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         .feedback {
             font-size: 20px;
-            margin: 15px 0;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
             min-height: 30px;
+            font-weight: 500;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .stats {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #6c757d;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .game-container {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
 <body>
-    <h1>Тренировка вычислений</h1>
-    <div class="problem" id="problem">Нажмите "Старт"</div>
-    <input type="number" id="answer" placeholder="Ответ">
-    <div>
-        <button id="check">Проверить</button>
-        <button id="next">Следующий</button>
+    <h1>🎯 Тренировка скоростного вычисления</h1>
+    
+    <!-- Выбор уровня сложности -->
+    <div class="level-selector">
+        <h3>Уровень сложности:</h3>
+        <button class="level-btn easy active" data-level="easy">🍃 Лёгкий</button>
+        <button class="level-btn medium" data-level="medium">🌿 Средний</button>
+        <button class="level-btn hard" data-level="hard">🔥 Тяжёлый</button>
     </div>
-    <div class="feedback" id="feedback"></div>
+    
+    <!-- Игровая зона -->
+    <div class="game-container">
+        <div class="problem" id="problem">Выберите уровень сложности</div>
+        
+        <div class="input-group">
+            <input type="number" id="answer" placeholder="Ответ" disabled>
+            <button class="game-btn check" id="check" disabled>✅ Проверить</button>
+            <button class="game-btn next" id="next" disabled>➡️ Следующий</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="stats">
+            Правильно: <span id="correct">0</span> | 
+            Неправильно: <span id="incorrect">0</span>
+        </div>
+    </div>
 
     <script>
-        //Генерация примеров
-function getRandomInRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-function oneone() {
-    const num1 = getRandomInRange(1, 9);
-    const num2 = getRandomInRange(1, 9);
-    const typeofcalc = getRandomInRange(0, 1);                                
-        if (typeofcalc === 0) {
-            return {
-                problem: `${num1} + ${num2}`,
-                answer: num1 + num2
-            };                
-        } else {
-            if (num1 - num2 >= 0) {
+        // Ваш существующий код генерации примеров
+        function getRandomInRange(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        function oneone() {
+            const onenum1 = getRandomInRange(1, 9);
+            const onenum2 = getRandomInRange(1, 9);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
                 return {
-                    problem: `${num1} - ${num2}`,
-                    answer: num1 - num2
-                };                 
+                    problem: `${onenum1} + ${onenum2}`,
+                    answer: onenum1 + onenum2
+                };
             } else {
-                return {
-                problem: `${num2} - ${num1}`,
-                answer: num2 - num1
-                };    
+                if (onenum1 - onenum2 >= 0) {
+                    return {
+                        problem: `${onenum1} - ${onenum2}`,
+                        answer: onenum1 - onenum2
+                    };
+                } else {
+                    return {
+                        problem: `${onenum2} - ${onenum1}`,
+                        answer: onenum2 - onenum1
+                    };
+                }
             }
         }
-}
-function twotwo() {
-    const num1 = getRandomInRange(10, 99);
-    const num2 = getRandomInRange(10, 99);
-    const typeofcalc = getRandomInRange(0, 1);                                
-        if (typeofcalc === 0) {
-            return {
-                problem: `${num1} + ${num2}`,
-                answer: num1 + num2
-            };                
-        } else {
-            if (num1 - num2 >= 0) {
+        
+        function twotwo() {
+            const twonum1 = getRandomInRange(10, 99);
+            const twonum2 = getRandomInRange(10, 99);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
                 return {
-                    problem: `${num1} - ${num2}`,
-                    answer: num1 - num2
-                };                 
+                    problem: `${twonum1} + ${twonum2}`,
+                    answer: twonum1 + twonum2
+                };
             } else {
-                return {
-                problem: `${num2} - ${num1}`,
-                answer: num2 - num1
-                };    
+                if (twonum1 - twonum2 >= 0) {
+                    return {
+                        problem: `${twonum1} - ${twonum2}`,
+                        answer: twonum1 - twonum2
+                    };
+                } else {
+                    return {
+                        problem: `${twonum2} - ${twonum1}`,
+                        answer: twonum2 - twonum1
+                    };
+                }
             }
         }
-}
-function twoone() {
-    const onenum = getRandomInRange(1, 9);
-    const twonum = getRandomInRange(10, 99);
-    const typeofcalc = getRandomInRange(0, 1);                                
-    if (typeofcalc === 0) {
-        return {
-            problem: `${twonum} + ${onenum}`,
-            answer: twonum + onenum
-        };
-    } else {
-        return {
-            problem: `${twonum} - ${onenum}`,
-            answer: twonum - onenum
-        };
-    }
-}
-function twoononemult9() {
-    const onenum = getRandomInRange(1, 9);
-    const twonum = getRandomInRange(10, 99);
-    const typeofcalc = getRandomInRange(0, 1);                                
-    if (typeofcalc === 0) {
-        return {
-            problem: `${onenum} * 9`,
-            answer: onenum * 9
-        };
-    } else {
-        return {
-            problem: `${twonum} * 9`,
-            answer: twonum * 9
-        };
-    }
-}
-function twoononemult11() {
-    const onenum = getRandomInRange(1, 9);
-    const twonum = getRandomInRange(10, 99);
-    const typeofcalc = getRandomInRange(0, 1);                                
-    if (typeofcalc === 0) {
-        return {
-            problem: `${onenum} * 11`,
-            answer: onenum * 11
-        };
-    } else {
-        return {
-            problem: `${twonum} * 11`,
-            answer: twonum * 11
-        };
-    }
-}
-function firstlevelcalc() {
-    let varofcalc = getRandomInRange(1, 5);
-    switch (varofcalc) {
-        case 1:
-            return oneone();
-            break;
-        case 2:
-            return twotwo();
-            break;
-        case 3:
-            return twoone();
-            break;
-        case 4:
-            return twoononemult9();
-            break;
-        case 5:
-            return twoononemult11();
-            break;
-    }
-}
-//Интерфейс
-let currentProblem = firstlevelcalc();
-        let score = 0;
+        
+        function twoone() {
+            const onenum = getRandomInRange(1, 9);
+            const twonum = getRandomInRange(10, 99);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum} + ${twonum}`,
+                    answer: onenum + twonum
+                };
+            } else {
+                return {
+                    problem: `${twonum} - ${onenum}`,
+                    answer: twonum - onenum
+                };
+            }
+        }
+        
+        function twoononemult9() {
+            const onenum = getRandomInRange(1, 9);
+            const twonum = getRandomInRange(10, 99);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum} × 9`,
+                    answer: onenum * 9
+                };
+            } else {
+                return {
+                    problem: `${twonum} × 9`,
+                    answer: twonum * 9
+                };
+            }
+        }
+        
+        function twoononemult11() {
+            const onenum = getRandomInRange(1, 9);
+            const twonum = getRandomInRange(10, 99);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum} × 11`,
+                    answer: onenum * 11
+                };
+            } else {
+                return {
+                    problem: `${twonum} × 11`,
+                    answer: twonum * 11
+                };
+            }
+        }
+        
+        function fivefive() {
+            const onenum1 = getRandomInRange(100, 99999);      
+            const onenum2 = getRandomInRange(100, 99999);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum1} + ${onenum2}`,
+                    answer: onenum1 + onenum2
+                };
+            } else {
+                if (onenum1 - onenum2 >= 0) {
+                    return {
+                        problem: `${onenum1} - ${onenum2}`,
+                        answer: onenum1 - onenum2
+                    };
+                } else {
+                    return {
+                        problem: `${onenum2} - ${onenum1}`,
+                        answer: onenum2 - onenum1
+                    };
+                }
+            }     
+        }
+        
+        function fiveMultDivision2 () {
+            const onenum1 = getRandomInRange(100, 99999);      
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum1} * 2`,
+                    answer: onenum1 * 2
+                };
+            } else {
+                return {
+                    problem: `${onenum1} / 2`,
+                    answer: onenum1 / 2
+                }
+            }     
+        }
+        
+        function eighteight() {
+            const onenum1 = getRandomInRange(1000000, 99999999);      
+            const onenum2 = getRandomInRange(1000000, 99999999);
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum1} + ${onenum2}`,
+                    answer: onenum1 + onenum2
+                };
+            } else {
+                if (onenum1 - onenum2 >= 0) {
+                    return {
+                        problem: `${onenum1} - ${onenum2}`,
+                        answer: onenum1 - onenum2
+                    };
+                } else {
+                    return {
+                        problem: `${onenum2} - ${onenum1}`,
+                        answer: onenum2 - onenum1
+                    };
+                }
+            }     
+        }
 
+        // Новый код для работы с интерфейсом
+        let currentLevel = 'easy';
+        let currentProblem;
+        let score = { correct: 0, incorrect: 0 };
+        
+        // Функция генерации примера в зависимости от уровня
+        function generateProblemByLevel() {
+            switch(currentLevel) {
+                case 'easy':
+                    // Для лёгкого уровня - только простые примеры
+                    const easyOptions = [oneone, twotwo, twoone, twoononemult9, twoononemult11];
+                    return easyOptions[getRandomInRange(0, 4)]();
+                
+                case 'medium':
+                    // Для среднего уровня - смешанные примеры
+                    const mediumOptions = [fivefive, fiveMultDivision2];
+                    return mediumOptions[getRandomInRange(0, 1)]();
+                
+                case 'hard':
+                    // Для сложного уровня - только сложные примеры
+                    return eighteight();
+                
+                default:
+                    return oneone(); // fallback
+            }
+        }
+        
+        // Обновление примера
         function updateProblem() {
-            currentProblem = firstlevelcalc();
+            currentProblem = generateProblemByLevel();
             document.getElementById('problem').textContent = currentProblem.problem;
             document.getElementById('answer').value = '';
             document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Активируем элементы ввода
+            document.getElementById('answer').disabled = false;
+            document.getElementById('check').disabled = false;
+            document.getElementById('next').disabled = true; // Следующий только после проверки
+            
             document.getElementById('answer').focus();
         }
-
+        
+        // Обработчики выбора уровня
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Обновляем активную кнопку
+                document.querySelectorAll('.level-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Сохраняем новый уровень
+                currentLevel = this.dataset.level;
+                
+                // Если игра уже начата, сразу обновляем пример
+                if (!document.getElementById('check').disabled) {
+                    updateProblem();
+                }
+            });
+        });
+        
+        // Обработчик проверки ответа
         document.getElementById('check').addEventListener('click', function() {
             const userAnswer = parseFloat(document.getElementById('answer').value);
             const feedbackEl = document.getElementById('feedback');
             
             if (isNaN(userAnswer)) {
                 feedbackEl.textContent = 'Введите число!';
+                feedbackEl.className = 'feedback incorrect';
                 return;
             }
             
             if (Math.abs(userAnswer - currentProblem.answer) < 0.001) {
                 feedbackEl.textContent = '✅ Правильно!';
-                feedbackEl.style.color = 'green';
-                score++;
+                feedbackEl.className = 'feedback correct';
+                score.correct++;
             } else {
                 feedbackEl.textContent = `❌ Неправильно! Правильный ответ: ${currentProblem.answer}`;
-                feedbackEl.style.color = 'red';
+                feedbackEl.className = 'feedback incorrect';
+                score.incorrect++;
+            }
+            
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('incorrect').textContent = score.incorrect;
+            
+            // Блокируем поле ввода и кнопку проверки
+            document.getElementById('answer').disabled = true;
+            document.getElementById('check').disabled = true;
+            
+            // Активируем кнопку "Следующий"
+            document.getElementById('next').disabled = false;
+        });
+        
+        // Обработчик следующего примера - ИСПРАВЛЕНО
+        document.getElementById('next').addEventListener('click', function() {
+            updateProblem();
+        });
+        
+        // Автозапуск первого примера
+        updateProblem();
+        
+        // Обработка нажатия Enter в поле ввода
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('check').click();
             }
         });
-
-        document.getElementById('next').addEventListener('click', updateProblem);
-
-        // Начало работы
-        updateProblem();
     </script>
 </body>
 </html>
