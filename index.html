@@ -303,9 +303,9 @@
             }
         }
         
-        function fivefive() {
-            const onenum1 = getRandomInRange(100, 99999);      
-            const onenum2 = getRandomInRange(100, 99999);
+        function threethree() {
+            const onenum1 = getRandomInRange(100, 999);      
+            const onenum2 = getRandomInRange(100, 999);
             let typeofcalc = getRandomInRange(0, 1);                                
             if (typeofcalc == 0) {
                 return {
@@ -327,8 +327,8 @@
             }     
         }
         
-        function fiveMultDivision2 () {
-            const onenum1 = getRandomInRange(100, 99999);      
+        function threeMultDivision2 () {
+            const onenum1 = getRandomInRange(100, 999);      
             let typeofcalc = getRandomInRange(0, 1);                                
             if (typeofcalc == 0) {
                 return {
@@ -343,9 +343,9 @@
             }     
         }
         
-        function eighteight() {
-            const onenum1 = getRandomInRange(1000000, 99999999);      
-            const onenum2 = getRandomInRange(1000000, 99999999);
+        function fivefive() {
+            const onenum1 = getRandomInRange(10000, 99999);      
+            const onenum2 = getRandomInRange(10000, 99999);
             let typeofcalc = getRandomInRange(0, 1);                                
             if (typeofcalc == 0) {
                 return {
@@ -367,6 +367,22 @@
             }     
         }
 
+        function fiveMultDivision2() {
+            const onenum1 = getRandomInRange(10000, 99999);      
+            let typeofcalc = getRandomInRange(0, 1);                                
+            if (typeofcalc == 0) {
+                return {
+                    problem: `${onenum1} * 2`,
+                    answer: onenum1 * 2
+                };
+            } else {
+                return {
+                    problem: `${onenum1} / 2`,
+                    answer: onenum1 / 2
+                }
+            }     
+        }
+
         // Новый код для работы с интерфейсом
         let currentLevel = 'easy';
         let currentProblem;
@@ -382,13 +398,13 @@
                 
                 case 'medium':
                     // Для среднего уровня - смешанные примеры
-                    const mediumOptions = [fivefive, fiveMultDivision2];
+                    const mediumOptions = [threethree, threeMultDivision2];
                     return mediumOptions[getRandomInRange(0, 1)]();
                 
                 case 'hard':
                     // Для сложного уровня - только сложные примеры
-                    return eighteight();
-                
+                    const hardOptions = [fivefive, fiveMultDivision2];
+                    return hardOptions[getRandomInRange(0, 1)]();                
                 default:
                     return oneone(); // fallback
             }
